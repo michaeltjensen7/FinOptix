@@ -182,6 +182,31 @@ export default function Chat() {
           <div className="flex flex-col items-center justify-end min-h-full">
             {isClient ? (
               <>
+                {messages.length <= 1 && (
+  <div className="max-w-3xl w-full mb-6">
+    <div className="text-sm font-medium mb-3 text-muted-foreground">
+      How can FinOptix help you today?:
+    </div>
+    <div className="flex flex-wrap gap-2">
+      {EXAMPLE_PROMPTS.map((p) => (
+        <button
+          key={p}
+          type="button"
+          onClick={() => {
+            form.setValue("message", p, {
+              shouldValidate: true,
+              shouldDirty: true,
+            });
+            setTimeout(() => inputRef.current?.focus(), 0);
+          }}
+          className="text-xs px-4 py-2 rounded-full border bg-card hover:bg-muted transition"
+        >
+          {p.length > 60 ? p.slice(0, 60) + "…" : p}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
                 <MessageWall messages={messages} status={status} durations={durations} onDurationChange={handleDurationChange} />
                 {status === "submitted" && (
                   <div className="flex justify-start max-w-3xl w-full">
@@ -199,26 +224,6 @@ export default function Chat() {
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-linear-to-t from-background via-background/50 to-transparent dark:bg-black overflow-visible pt-13">
           <div className="w-full px-5 pt-5 pb-1 items-center flex justify-center relative overflow-visible">
             <div className="message-fade-overlay" />
-            <div className="max-w-3xl w-full">
-              <div className="mb-3">
-  <div className="text-sm font-medium mb-2">Try an example:</div>
-  <div className="flex flex-wrap gap-2">
-    {EXAMPLE_PROMPTS.map((p) => (
-      <button
-        key={p}
-        type="button"
-        onClick={() => {
-          form.setValue("message", p, { shouldValidate: true, shouldDirty: true });
-          // focus input after setting text
-          setTimeout(() => inputRef.current?.focus(), 0);
-        }}
-        className="text-xs px-3 py-2 rounded-full border bg-card hover:bg-muted transition"
-      >
-        {p.length > 52 ? p.slice(0, 52) + "…" : p}
-      </button>
-    ))}
-  </div>
-</div>
               <form id="chat-form" onSubmit={form.handleSubmit(onSubmit)}>
                 <FieldGroup>
                   <Controller
