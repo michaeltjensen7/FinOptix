@@ -293,3 +293,7 @@ export default function Chat() {
     <Link href="https://ringel.ai/" className="underline">Ringel.AI</Link>
   </div>
 </div>
+      </main>
+    </div>
+  );
+}
