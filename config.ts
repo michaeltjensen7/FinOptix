@@ -32,8 +32,9 @@ export const DATE_AND_TIME = getDateAndTime();
 
 export const AI_NAME = "FinOptix";
 export const OWNER_NAME = "Michael Jensen, MBA, MHA";
+export const AI_DESCRIPTION = "healthcare operations + finance assistant for Excel/Power BI, KPIs, budgeting, and dashboard design";
 
-export const WELCOME_MESSAGE = `Hello! I'm ${AI_NAME}, an AI assistant created by ${OWNER_NAME}.`
+export const WELCOME_MESSAGE = `Hello! I'm ${AI_NAME}, an AI assistant created by ${OWNER_NAME}. I am a ${AI_DESCRIPTION}.`
 
 export const CLEAR_CHAT_TEXT = "New";
 
