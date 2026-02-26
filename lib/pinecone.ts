@@ -24,17 +24,17 @@ export async function searchPinecone(query: string): Promise<PineconeToolResult>
     },
     // IMPORTANT: request image_url (and whatever you used to store name/description)
     fields: [
-      'text',
-      'pre_context',
-      'post_context',
-      'source_url',
-      'source_description',
-      'source_type',
-      'order',
-      'image_url',      // <-- add this
-      'image_name',     // <-- add if you stored it
-      'source_name',    // <-- add if you stored it
-    ],
+  'text',
+  'pre_context',
+  'post_context',
+  'source_url',
+  'source_description',
+  'source_type',
+  'order',
+  'image_url',       // ADD THIS
+  'image_name',      // optional, only if you stored it
+  'source_name',     // optional
+],
   });
 
   // Helpful logs while debugging (check Vercel logs)
@@ -43,21 +43,21 @@ export async function searchPinecone(query: string): Promise<PineconeToolResult>
 
   // Convert to your existing chunk/source pipeline
   const chunks = searchResultsToChunks(results);
-  const sources = getSourcesFromChunks(chunks);
+const sources = getSourcesFromChunks(chunks);
 
-  // Try to find an image result from sources
-  const imageSource = sources.find((s: any) => s.image_url || s.source_type === 'image');
+let context = getContextFromSources(sources);
 
-  if (imageSource?.image_url) {
-    return {
-      kind: 'image',
-      image_url: imageSource.image_url,
-      caption: imageSource.source_description || imageSource.text || '',
-      source_name: imageSource.source_name || imageSource.image_name || '',
-    };
-  }
+// Try to find an image URL in the results
+const imageSource = sources.find((s: any) => s.image_url);
 
-  // Fallback to text context
-  const context = getContextFromSources(sources);
-  return { kind: 'text', text: `< results > ${context} </results>` };
+if (imageSource?.image_url) {
+  const caption =
+    imageSource.source_description ||
+    imageSource.text ||
+    "Image";
+
+  context += `\n\n![${caption}](${imageSource.image_url})\n\nDirect link: ${imageSource.image_url}`;
+}
+
+return `< results > ${context} </results>`};
 }
