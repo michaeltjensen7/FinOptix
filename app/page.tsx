@@ -65,11 +65,21 @@ const saveMessagesToStorage = (messages: UIMessage[], durations: Record<string, 
   }
 };
 
+const EXAMPLE_PROMPTS = [
+  "Design a KPI dashboard for an outpatient clinic. Include KPI definitions, formulas, and recommended visuals.",
+  "My Power BI MoM % spikes when the prior month is blank or zero. Write a robust DAX measure that handles blanks/zeros safely.",
+  "Build an Excel budget vs actual template with variance analysis. Include example formulas.",
+  "Explain the most important revenue cycle KPIs for leadership and how to interpret them.",
+  "Using the knowledge base, summarize best practices for structuring a healthcare finance dashboard. Include Sources.",
+  "Show me the bison image from the knowledge base.",
+];
+
 export default function Chat() {
   const [isClient, setIsClient] = useState(false);
   const [durations, setDurations] = useState<Record<string, number>>({});
   const welcomeMessageShownRef = useRef<boolean>(false);
-
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  
   const stored = typeof window !== 'undefined' ? loadMessagesFromStorage() : { messages: [], durations: {} };
   const [initialMessages] = useState<UIMessage[]>(stored.messages);
 
@@ -190,6 +200,25 @@ export default function Chat() {
           <div className="w-full px-5 pt-5 pb-1 items-center flex justify-center relative overflow-visible">
             <div className="message-fade-overlay" />
             <div className="max-w-3xl w-full">
+              <div className="mb-3">
+  <div className="text-sm font-medium mb-2">Try an example:</div>
+  <div className="flex flex-wrap gap-2">
+    {EXAMPLE_PROMPTS.map((p) => (
+      <button
+        key={p}
+        type="button"
+        onClick={() => {
+          form.setValue("message", p, { shouldValidate: true, shouldDirty: true });
+          // focus input after setting text
+          setTimeout(() => inputRef.current?.focus(), 0);
+        }}
+        className="text-xs px-3 py-2 rounded-full border bg-card hover:bg-muted transition"
+      >
+        {p.length > 52 ? p.slice(0, 52) + "…" : p}
+      </button>
+    ))}
+  </div>
+</div>
               <form id="chat-form" onSubmit={form.handleSubmit(onSubmit)}>
                 <FieldGroup>
                   <Controller
@@ -202,20 +231,24 @@ export default function Chat() {
                         </FieldLabel>
                         <div className="relative h-13">
                           <Input
-                            {...field}
-                            id="chat-form-message"
-                            className="h-15 pr-15 pl-5 bg-card rounded-[20px]"
-                            placeholder="Type your message here..."
-                            disabled={status === "streaming"}
-                            aria-invalid={fieldState.invalid}
-                            autoComplete="off"
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" && !e.shiftKey) {
-                                e.preventDefault();
-                                form.handleSubmit(onSubmit)();
-                              }
-                            }}
-                          />
+                              {...field}
+                              ref={(el) => {
+                                field.ref(el);
+                                inputRef.current = el;
+                              }}
+                              id="chat-form-message"
+                              className="h-15 pr-15 pl-5 bg-card rounded-[20px]"
+                              placeholder="Type your message here..."
+                              disabled={status === "streaming" || status === "submitted"}
+                              aria-invalid={fieldState.invalid}
+                              autoComplete="off"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                  e.preventDefault();
+                                  form.handleSubmit(onSubmit)();
+                                }
+                              }}
+                            />
                           {(status == "ready" || status == "error") && (
                             <Button
                               className="absolute right-3 top-3 rounded-full"
