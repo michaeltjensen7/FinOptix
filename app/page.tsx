@@ -182,6 +182,7 @@ export default function Chat() {
           <div className="flex flex-col items-center justify-end min-h-full">
             {isClient ? (
               <>
+             <MessageWall messages={messages} status={status} durations={durations} onDurationChange={handleDurationChange} />
                 {messages.length <= 1 && (
   <div className="max-w-3xl w-full mb-6">
     <div className="text-sm font-medium mb-3 text-muted-foreground">
@@ -207,7 +208,6 @@ export default function Chat() {
     </div>
   </div>
 )}
-                <MessageWall messages={messages} status={status} durations={durations} onDurationChange={handleDurationChange} />
                 {status === "submitted" && (
                   <div className="flex justify-start max-w-3xl w-full">
                     <Loader2 className="size-4 animate-spin text-muted-foreground" />
