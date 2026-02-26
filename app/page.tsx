@@ -71,7 +71,6 @@ const EXAMPLE_PROMPTS = [
   "Build an Excel budget vs actual template with variance analysis. Include example formulas.",
   "Explain the most important revenue cycle KPIs for leadership and how to interpret them.",
   "Using the knowledge base, summarize best practices for structuring a healthcare finance dashboard. Include Sources.",
-  "Show me the bison image from the knowledge base.",
 ];
 
 export default function Chat() {
