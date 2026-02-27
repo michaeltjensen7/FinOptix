@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MyAI3",
-  description: "MyAI3",
+  title: "FinOptix AI",
+  description: "Healthcare finance and operations AI assistant",
 };
 
 export default function RootLayout({
